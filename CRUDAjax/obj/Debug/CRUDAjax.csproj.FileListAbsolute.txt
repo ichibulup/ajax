@@ -141,3 +141,5 @@ C:\Users\Admin\Source\Repos\ichi\CRUDAjax\bin\Microsoft.Bcl.TimeProvider.dll
 C:\Users\Admin\Source\Repos\ichi\CRUDAjax\bin\Microsoft.Bcl.TimeProvider.xml
 C:\Users\Admin\Source\Repos\ichi\CRUDAjax\bin\Xceed.Document.NET.dll
 C:\Users\Admin\Source\Repos\ichi\CRUDAjax\bin\Xceed.Words.NET.dll
+C:\Users\Admin\source\repos\ichi\CRUDAjax\bin\Newtonsoft.Json.dll
+C:\Users\Admin\source\repos\ichi\CRUDAjax\bin\Newtonsoft.Json.xml

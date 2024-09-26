@@ -4,10 +4,10 @@
 $(document).ready(() => {
     loadData();
 
-    // if ($.fn.DataTable.isDataTable('#employeeTable')) {
-    //     $('#employeeTable').DataTable().destroy();
-    //     console.log("Table is exist")
-    // }
+    if ($.fn.DataTable.isDataTable('#employeeTable')) {
+        $('#employeeTable').DataTable().destroy();
+        console.log("Table is exist")
+    }
 
     $('#addBtn').click(() => {
         clearModal();
@@ -54,7 +54,7 @@ let loadData = () => {
         "pageLength": 10,
         ajax: {
             url: '/Home/List',
-            // dataType: "json",
+            dataType: "json",
             // contentType: "application/json;charset=utf-8",
             type: 'POST'
         },

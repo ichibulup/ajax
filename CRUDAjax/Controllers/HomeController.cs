@@ -13,6 +13,8 @@ using System.Configuration;
 using System.Reflection;
 using System.Data;
 using System.Text;
+using OfficeOpenXml;
+using Xceed.Words.NET;
 
 namespace CRUDAjax.Controllers
 {
@@ -225,34 +227,34 @@ namespace CRUDAjax.Controllers
         //}
 
         public void ExportToExcel() {
-            //using (SaveFileDialog sfd = new SaveFileDialog() { Filter = "Excel Workbook|*.xlsx" }) {
-            //    if (sfd.ShowDialog() == DialogResult.OK) {
-            //        var fileInfo = new FileInfo(sfd.FileName);
-            //        using (ExcelPackage excelPackage = new ExcelPackage(fileInfo)) {
-            //            ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets.Add("Customers");
-            //            // Load the data from the DataTable to the Excel worksheet
-            //            worksheet.Cells.LoadFromDataTable(this.appData.Customers.CopyToDataTable(), true);
-            //            // Save the Excel file
-            //            excelPackage.Save();
-            //        }
-            //    }
-            //}
             var datatablesDB = empDB.ListAll();
             using (ExcelPackage Ep = new ExcelPackage()) {
                 ExcelWorksheet Sheet = Ep.Workbook.Worksheets.Add("Report");
-                Sheet.Cells["A1"].Value = "Name";
-                Sheet.Cells["B1"].Value = "Age";
-                Sheet.Cells["C1"].Value = "State";
-                Sheet.Cells["D1"].Value = "Country";
+                Sheet.Cells["A1"].Value = "EmployeeID"; // [1, 1]
+                Sheet.Cells["B1"].Value = "Name"; // [1, 2]
+                Sheet.Cells["C1"].Value = "Age"; // [1, 3]
+                Sheet.Cells["D1"].Value = "State"; // [1, 4]
+                Sheet.Cells["E1"].Value = "Country"; // [1, 5]
                 int row = 2;
                 foreach (var item in datatablesDB) {
-                    Sheet.Cells[string.Format("A{0}", row)].Value = item.Name;
-                    Sheet.Cells[string.Format("B{0}", row)].Value = item.Age;
-                    Sheet.Cells[string.Format("C{0}", row)].Value = item.State;
-                    Sheet.Cells[string.Format("D{0}", row)].Value = item.Country;
+                    Sheet.Cells[string.Format("A{0}", row)].Value = item.EmployeeID;
+                    Sheet.Cells[string.Format("B{0}", row)].Value = item.Name;
+                    Sheet.Cells[string.Format("C{0}", row)].Value = item.Age;
+                    Sheet.Cells[string.Format("D{0}", row)].Value = item.State;
+                    Sheet.Cells[string.Format("E{0}", row)].Value = item.Country;
                     row++;
                 }
+                
+                Sheet.Column(1).Style.Numberformat.Format = "0"; // EmployeeID
+                Sheet.Column(3).Style.Numberformat.Format = "0"; // Age
                 Sheet.Cells["A:AZ"].AutoFitColumns();
+
+                // var stream = new MemoryStream();
+                // excel.SaveAs(stream);
+                // var fileName = "Employees.xlsx";
+
+                // return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+
                 Response.Clear();
                 Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
                 Response.AddHeader("content-disposition", "attachment: filename=" + "Report.xlsx");
@@ -260,48 +262,54 @@ namespace CRUDAjax.Controllers
                 Response.End();
             }
         }
-
+        
         public void ExportToWord() {
-            Export();
-        }
-
-        public FileResult Export() {
-            var customers = empDB.ListAll();
-
-            //Building an HTML string.
-            StringBuilder sb = new StringBuilder();
-
-            //Table start.
-            sb.Append("<table border='1' cellpadding='5' cellspacing='0' style='border: 1px solid #ccc;font-family: Arial;'>");
-
-            //Building the Header row.
-            sb.Append("<tr>");
-            sb.Append("<th style='background-color: #B8DBFD;border: 1px solid #ccc'>CustomerID</th>");
-            sb.Append("<th style='background-color: #B8DBFD;border: 1px solid #ccc'>ContactName</th>");
-            sb.Append("<th style='background-color: #B8DBFD;border: 1px solid #ccc'>City</th>");
-            sb.Append("<th style='background-color: #B8DBFD;border: 1px solid #ccc'>Country</th>");
-            sb.Append("</tr>");
-
-            //Building the Data rows.
-            //fo
-
-
-            foreach (var item in customers)
+            List<Employee> employee = new List<Employee>();
+            var datatablesDB = empDB.ListAll();
+            using (DocX document = DocX.Create("PeopleExport.docx"))
             {
-                sb.Append("<tr>");
-                //foreach (var jtem in item)
-                //{
-                //    sb.Append("<td style='border: 1px solid #ccc'>");
-                //    sb.Append(jtem);
-                //    sb.Append("</td>");
-                //}
-                sb.Append("</tr>");
+                document.InsertParagraph("Employee List").Font("Arial").FontSize(20).Bold().SpacingAfter(20);
+                var table = document.InsertTable(empDB.ListAll().Count + 1, 4);
+
+                table.Rows[0].Cells[0].Paragraphs.First().Append("Name").Bold();
+                table.Rows[0].Cells[1].Paragraphs.First().Append("Age").Bold();
+                table.Rows[0].Cells[2].Paragraphs.First().Append("State").Bold();
+                table.Rows[0].Cells[3].Paragraphs.First().Append("country").Bold();
+
+                int row = 1;
+                foreach (var item in datatablesDB) {
+                    // table.Rows[row].Cells[0].Paragraphs.First().Append(item.EmployeeID.ToString());
+                    table.Rows[row].Cells[0].Paragraphs.First().Append(item.Name);
+                    table.Rows[row].Cells[1].Paragraphs.First().Append(item.Age.ToString());
+                    table.Rows[row].Cells[2].Paragraphs.First().Append(item.State);
+                    table.Rows[row].Cells[3].Paragraphs.First().Append(item.Country);
+                    row++;
+                }
+
+                // document.Save();
+                //
+                // Response.Clear();
+                // Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                // Response.AddHeader("content-disposition", "attachment: filename=" + "Report.docx");
+                // // Response.BinaryWrite(Ep.GetAsByteArray());
+                // // Response.BinaryWrite(document.GetHashCode());
+                // Response.BinaryWrite(document.InsertTable(table));
+                // Response.End();
+                
+                using (MemoryStream stream = new MemoryStream()) {
+                    document.SaveAs(stream);
+                    stream.Position = 0;
+
+                    Response.Clear();
+                    Response.ContentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+                    Response.AddHeader("content-disposition", "attachment; filename=PeopleExport.docx");
+                    Response.BinaryWrite(stream.ToArray());
+                    Response.End();
+                }
             }
 
-            //Table end.
-            sb.Append("</table>");
-
-            return File(Encoding.UTF8.GetBytes(sb.ToString()), "application/vnd.ms-word", "Grid.doc");
+            // byte[] fileBytes = System.IO.File.ReadAllBytes("PeopleExport.docx");
+            // return File(fileBytes, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "PeopleExport.docx");
         }
     }
 }
