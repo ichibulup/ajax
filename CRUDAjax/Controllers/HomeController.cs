@@ -240,16 +240,18 @@ namespace CRUDAjax.Controllers
             var datatablesDB = empDB.ListAll();
             using (ExcelPackage Ep = new ExcelPackage()) {
                 ExcelWorksheet Sheet = Ep.Workbook.Worksheets.Add("Report");
-                Sheet.Cells["A1"].Value = "Name";
-                Sheet.Cells["B1"].Value = "Age";
-                Sheet.Cells["C1"].Value = "State";
-                Sheet.Cells["D1"].Value = "Country";
+                Sheet.Cells["A1"].Value = "ID";
+                Sheet.Cells["B1"].Value = "Name";
+                Sheet.Cells["C1"].Value = "Age";
+                Sheet.Cells["D1"].Value = "State";
+                Sheet.Cells["E1"].Value = "Country";
                 int row = 2;
                 foreach (var item in datatablesDB) {
-                    Sheet.Cells[string.Format("A{0}", row)].Value = item.Name;
-                    Sheet.Cells[string.Format("B{0}", row)].Value = item.Age;
-                    Sheet.Cells[string.Format("C{0}", row)].Value = item.State;
-                    Sheet.Cells[string.Format("D{0}", row)].Value = item.Country;
+                    Sheet.Cells[string.Format("A{0}", row)].Value = item.EmployeeID;
+                    Sheet.Cells[string.Format("B{0}", row)].Value = item.Name;
+                    Sheet.Cells[string.Format("C{0}", row)].Value = item.Age;
+                    Sheet.Cells[string.Format("D{0}", row)].Value = item.State;
+                    Sheet.Cells[string.Format("E{0}", row)].Value = item.Country;
                     row++;
                 }
                 Sheet.Cells["A:AZ"].AutoFitColumns();
