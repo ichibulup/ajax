@@ -96,7 +96,7 @@ namespace CRUDAjax.Models
 
     public class EmployeeDB
     {
-        private readonly string connectionString = "Data Source=MAY14;Initial Catalog=DTS;Integrated Security=True;Trusted_Connection=True";
+        private readonly string connectionString = "Data Source=ADMIN\\SQLEXPRESS;Initial Catalog=MVCDB;Integrated Security=True;Trusted_Connection=True";
 
         public List<Employee> ListAll()
         {

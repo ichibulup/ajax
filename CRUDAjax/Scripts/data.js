@@ -42,13 +42,34 @@ let loadData = () => {
     $(document).ready(() => {
         $("#employeeTable").DataTable({
             "processing": true,
-            //"serverSide": true, // fail to sort
+            "serverSide": true, // fail to sort
             "filter": true,
             // searchDelay: 
-            "paging": true,
             "searching": true,
             // "orderMulti": false,
             // "pageLength": 10,
+
+            info: true,
+            ordering: true,
+            paging: true,
+
+            order: [[3, 'desc']],
+            //columnDefs: [
+            //    {
+            //        targets: [0],
+            //        visible: false,
+            //        orderData: [0, 1]
+            //    },    
+            //    {
+            //        targets: [1],
+            //        orderData: [1, 0]
+            //    },
+            //    {
+            //        targets: [4],
+            //        orderData: [4, 0]
+            //    }
+            //],
+
             "bDestroy": true ,
             "ajax": {
                 url: '/Home/List',
