@@ -1,5 +1,5 @@
 ﻿
-/// <reference path="jquery-1.9.1.intellisense.js" />
+/// <reference path="jquery-3.7.1.intellisense.js" />
 
 $(document).ready(() => {
     loadData();
@@ -41,23 +41,27 @@ let loadData = () => {
     // $('#employeeTable').empty();
     $(document).ready(() => {
         $("#employeeTable").DataTable({
-            // "processing": true,
-            // "serverSide": true,
-            //"filter": true,
+            "processing": true,
+            //"serverSide": true, // fail to sort
+            "filter": true,
             // searchDelay: 
-            // "paging": true,
-            // "searching": false,
+            "paging": true,
+            "searching": true,
             // "orderMulti": false,
-            // "dataSrc": '',
             // "pageLength": 10,
             "bDestroy": true ,
             "ajax": {
                 url: '/Home/List',
                 dataType: "json",
+                //headers: {
+                //    "CSRFToken": TOKEN
+                //},
                 // contentType: "application/json;charset=utf-8",
                 type: 'GET',
-                dataSrc: ''
-                // "data": 
+                dataSrc: '',
+                //data: (d) => {
+                //    d.CSRFToken = TOKEN;
+                //},
             },
             "columns": [
                 { "data": "EmployeeID" },
